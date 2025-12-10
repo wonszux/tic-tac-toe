@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const squares = Array.from({ length: 9 }, (_, i) => i);
 
@@ -16,23 +16,25 @@ export default function Home() {
       newBoard[i] = Ans;
       setBoard(newBoard);
       setRound(round + 1);
-      CheckWin();
     }
   };
 
   const CheckWin = () => {
     for (let i = 0; i < correctAns.length; i++) {
       const [a, b, c] = correctAns[i];
-      if (
-        squares[a] &&
-        squares[a] === squares[b] &&
-        squares[a] === squares[c]
-      ) {
-        return squares[a];
+      if (board[a] && board[a] === board[b] && board[a] === board[c]) {
+        alert("wygrały" + board[a]);
+        return board[a];
       }
     }
     return null;
   };
+
+  useEffect(() => {
+    setTimeout(() => {
+      CheckWin();
+    }, 100);
+  }, [board]);
 
   const table = squares.map((i) => (
     <div
