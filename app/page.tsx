@@ -1,14 +1,37 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 
 const squares = Array.from({ length: 9 }, (_, i) => i);
 
 export default function Home() {
-  const [board, setBoard] = useState<(null | "X" | "O")[]>(Array(9).fill(null));
+  const [board, setBoard] = useState<("X" | "O" | null)[]>(Array(9).fill(null));
   const [round, setRound] = useState(1);
+  const [endgame, setEndgame] = useState(false);
   const isXturn = round % 2 == 0;
   const Ans = isXturn ? "X" : "O";
+
+  const RestartGame = () => {
+    setEndgame(false);
+    setBoard(board.fill(null));
+    setRound(1);
+  };
+
+  const RestartButton = () => {
+    if (endgame) {
+      return (
+        <div>
+          <button
+            onClick={() => {
+              RestartGame();
+            }}
+          >
+            Restart game
+          </button>
+        </div>
+      );
+    } else return <div></div>;
+  };
 
   const HandleClick = (i: number) => {
     if (board[i] === null) {
@@ -23,7 +46,8 @@ export default function Home() {
     for (let i = 0; i < correctAns.length; i++) {
       const [a, b, c] = correctAns[i];
       if (board[a] && board[a] === board[b] && board[a] === board[c]) {
-        alert("wygrały" + board[a]);
+        setEndgame(true);
+        alert("wygrały: " + board[a]);
         return board[a];
       }
     }
@@ -48,7 +72,10 @@ export default function Home() {
 
   return (
     <div className="flex flex-row min-h-screen justify-center items-center">
-      <div className="grid grid-cols-3 gap-3">{table}</div>
+      <div className="grid grid-cols-3 gap-3">
+        {table}
+        {RestartButton()}
+      </div>
     </div>
   );
 }
